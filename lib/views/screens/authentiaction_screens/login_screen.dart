@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/auth_controllers.dart';
 import 'package:mac_store_app/views/screens/authentiaction_screens/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthControllers _authControllers = AuthControllers();
+  late String email;
+  late String password;
+  bool isLoading = false;
+
+  loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    await _authControllers
+        .signInUsers(context: context, email: email, password: password)
+        .whenComplete(() {
+          _formKey.currentState!.reset();
+          setState(() {
+            isLoading = false;
+          });
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +76,16 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                onChanged: (value) {
+                  password = value;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'enter your password';
+                  } else {
+                    return null;
+                  }
+                },
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -77,6 +112,16 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               TextFormField(
+                onChanged: (value) {
+                  email = value;
+                },
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'enter your email';
+                  } else {
+                    return null;
+                  }
+                },
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -103,91 +148,101 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-
-              Container(
-                width: 319,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF102DE1), Color(0xCC0D6EFF)],
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 278,
-                      top: 19,
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 12,
-                            color: Color(0xFF103DE5),
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
+              InkWell(
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    loginUser();
+                  } else {}
+                },
+                child: Container(
+                  width: 319,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF102DE1), Color(0xCC0D6EFF)],
                     ),
-                    Positioned(
-                      left: 260,
-                      top: 29,
-                      child: Opacity(
-                        opacity: 0.5,
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 278,
+                        top: 19,
                         child: Container(
-                          width: 10,
-                          height: 10,
+                          width: 60,
+                          height: 60,
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
-                            border: Border.all(width: 3),
-                            color: Color(0xFF2141E5),
-                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              width: 12,
+                              color: Color(0xFF103DE5),
+                            ),
+                            borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: 311,
-                      top: 36,
-                      child: Opacity(
-                        opacity: 0.3,
+                      Positioned(
+                        left: 260,
+                        top: 29,
+                        child: Opacity(
+                          opacity: 0.5,
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 3),
+                              color: Color(0xFF2141E5),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 311,
+                        top: 36,
+                        child: Opacity(
+                          opacity: 0.3,
+                          child: Container(
+                            width: 5,
+                            height: 5,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 281,
+                        top: -10,
                         child: Container(
-                          width: 5,
-                          height: 5,
+                          width: 20,
+                          height: 20,
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(3),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: 281,
-                      top: -10,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      Center(
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text(
+                                'Sign in',
+                                style: GoogleFonts.getFont(
+                                  'Lato',
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
-                    ),
-                    Center(
-                      child: Text(
-                        'Sign in',
-                        style: GoogleFonts.getFont(
-                          'Lato',
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 20),
