@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mac_store_app/views/screens/authentiaction_screens/login_screen.dart';
+import 'package:mac_store_app/views/screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: LoginScreen(),
+      home: MainScreen(),
     );
   }
 }

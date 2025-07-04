@@ -23,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
     await _authControllers
         .signInUsers(context: context, email: email, password: password)
         .whenComplete(() {
-          _formKey.currentState!.reset();
           setState(() {
             isLoading = false;
           });
