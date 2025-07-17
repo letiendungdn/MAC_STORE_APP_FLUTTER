@@ -51,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   "Create your account",
                   style: GoogleFonts.getFont(
                     'Lato',
-                    color: Color(0xFF0d120e),
+                    color: const Color(0xFF0d120e),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.2,
                     fontSize: 23,
@@ -61,7 +61,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   'To Explore the world exclusives',
                   style: GoogleFonts.getFont(
                     'Lato',
-                    color: Color(0xFF0d120e),
+                    color: const Color(0xFF0d120e),
                     fontSize: 14,
                     letterSpacing: 0.2,
                   ),
@@ -117,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -162,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   onChanged: (value) {
                     password = value;
@@ -196,10 +196,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 20,
                       ),
                     ),
-                    suffixIcon: Icon(Icons.visibility),
+                    suffixIcon: const Icon(Icons.visibility),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 InkWell(
                   onTap: () {
@@ -212,7 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: [Color(0xFF102DE1), Color(0xCC0D6EFF)],
                       ),
                     ),
@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 12,
-                                color: Color(0xFF103DE5),
+                                color: const Color(0xFF103DE5),
                               ),
                               borderRadius: BorderRadius.circular(30),
                             ),
@@ -245,7 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               clipBehavior: Clip.antiAlias,
                               decoration: BoxDecoration(
                                 border: Border.all(width: 3),
-                                color: Color(0xFF2141E5),
+                                color: const Color(0xFF2141E5),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
@@ -298,7 +298,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -315,7 +315,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return LoginScreen();
+                              return const LoginScreen();
                             },
                           ),
                         );
@@ -323,7 +323,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Text(
                         'Sign in',
                         style: GoogleFonts.roboto(
-                          color: Color(0xFF2141E5),
+                          color: const Color(0xFF2141E5),
                           fontWeight: FontWeight.bold,
                         ),
                       ),

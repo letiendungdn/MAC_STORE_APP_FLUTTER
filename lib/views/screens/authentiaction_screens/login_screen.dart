@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 "login your account",
                 style: GoogleFonts.getFont(
                   'Lato',
-                  color: Color(0xFF0d120e),
+                  color: const Color(0xFF0d120e),
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.2,
                   fontSize: 23,
@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'To Explore the world exclusives',
                 style: GoogleFonts.getFont(
                   'Lato',
-                  color: Color(0xFF0d120e),
+                  color: const Color(0xFF0d120e),
                   fontSize: 14,
                   letterSpacing: 0.2,
                 ),
@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 onChanged: (value) {
                   email = value;
@@ -143,10 +143,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 20,
                     ),
                   ),
-                  suffixIcon: Icon(Icons.visibility),
+                  suffixIcon: const Icon(Icons.visibility),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               InkWell(
                 onTap: () {
                   if (_formKey.currentState!.validate()) {
@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [Color(0xFF102DE1), Color(0xCC0D6EFF)],
                     ),
                   ),
@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               width: 12,
-                              color: Color(0xFF103DE5),
+                              color: const Color(0xFF103DE5),
                             ),
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             clipBehavior: Clip.antiAlias,
                             decoration: BoxDecoration(
                               border: Border.all(width: 3),
-                              color: Color(0xFF2141E5),
+                              color: const Color(0xFF2141E5),
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
@@ -244,7 +244,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return RegisterScreen();
+                            return const RegisterScreen();
                           },
                         ),
                       );
@@ -269,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Sign up',
                       style: GoogleFonts.roboto(
-                        color: Color(0xFF2141E5),
+                        color: const Color(0xFF2141E5),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
