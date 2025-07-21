@@ -24,12 +24,12 @@ class HeaderWidget extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Enter text',
-                  hintStyle: TextStyle(fontSize: 14, color: Color(0xFF7F7F7F)),
-                  contentPadding: EdgeInsets.symmetric(
+                  hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF7F7F7F)),
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 16,
                   ),
-                  prefixIcon: Image.asset('assets/icons/search1.png'),
+                  prefixIcon: Image.asset('assets/icons/searc1.png'),
                   suffixIcon: Image.asset('assets/icons/cam.png'),
                   fillColor: Colors.grey.shade200,
                   filled: true,
@@ -45,11 +45,11 @@ class HeaderWidget extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {},
-                overlayColor: MaterialStateProperty.all(Color(0x0c7f7f)),
+                overlayColor: WidgetStateProperty.all(const Color(0x000c7f7f)),
                 child: Ink(
                   width: 31,
                   height: 31,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/icons/bell.png'),
                     ),
@@ -65,11 +65,11 @@ class HeaderWidget extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {},
-                overlayColor: MaterialStateProperty.all(Color(0x0c7f7f)),
+                overlayColor: WidgetStateProperty.all(const Color(0x000c7f7f)),
                 child: Ink(
                   width: 31,
                   height: 31,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/icons/message.png'),
                     ),
