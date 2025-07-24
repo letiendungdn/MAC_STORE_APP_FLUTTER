@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/category_controllers.dart';
 import 'package:mac_store_app/models/category.dart';
+import 'package:mac_store_app/views/screens/detail/screens/inner_category_screen.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 
 class CategoryItemWidget extends StatefulWidget {
@@ -53,14 +54,26 @@ class _CategoryItemWidgetState extends State<CategoryItemWidget> {
                 ),
                 itemBuilder: (context, index) {
                   final category = categories[index];
-                  return Column(
-                    children: [
-                      Image.network(category.image, height: 47, width: 47),
-                      Text(category.name,style: GoogleFonts.quicksand(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      ),),
-                    ],
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context)  {
+                            return InnerCategoryScreen(category: category);
+                          },
+                        ),
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        Image.network(category.image, height: 47, width: 47),
+                        Text(category.name,style: GoogleFonts.quicksand(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16
+                        ),),
+                      ],
+                    ),
                   );
                 },
               );
