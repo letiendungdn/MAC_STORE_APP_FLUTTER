@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/auth_controllers.dart';
-import 'package:mac_store_app/views/screens/authentiaction_screens/register_screen.dart';
+import 'package:mac_store_app/views/screens/authentiaction/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late String password;
   bool isLoading = false;
 
-  loginUser() async {
+  Future<void> loginUser() async {
     setState(() {
       isLoading = true;
     });
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white.withOpacity(0.9),
+      backgroundColor: Colors.white.withValues(alpha: 0.9),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
