@@ -1,10 +1,11 @@
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/models/banner.dart';
 
 class BannerController {
- 
   // fetch banner
   Future<List<BannerModel>> loadBanners() async {
     try {
@@ -15,7 +16,7 @@ class BannerController {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-      print(response.statusCode);
+      debugPrint(response.statusCode.toString());
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         List<BannerModel> banners = data

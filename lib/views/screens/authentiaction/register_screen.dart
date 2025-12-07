@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/auth_controllers.dart';
-import 'package:mac_store_app/views/screens/authentiaction_screens/login_screen.dart';
+import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late String fullName;
   late String password;
   bool isLoading = false;
-  registerUser() async {
+  Future<void> registerUser() async {
     setState(() {
       isLoading = true;
     });
@@ -38,7 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white.withOpacity(0.95),
+      backgroundColor: Colors.white.withValues(alpha: 0.95),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
@@ -137,6 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value!.isEmpty) {
                       return "enter your full nanme";
                     }
+                    return null;
                   },
                   decoration: InputDecoration(
                     fillColor: Colors.white,

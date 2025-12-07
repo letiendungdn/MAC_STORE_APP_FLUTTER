@@ -5,12 +5,12 @@ import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:mac_store_app/services/manage_http_response.dart';
-import 'package:mac_store_app/views/screens/authentiaction_screens/login_screen.dart';
+import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class AuthControllers {
   Future<void> signUpUsers({
-    required context,
+    required BuildContext context,
     required String email,
     required String fullName,
     required String password,
@@ -36,10 +36,12 @@ class AuthControllers {
               "application/json;charset=UTF-8", //specify the context types as Json
         },
       );
+      if (!context.mounted) return;
       manageHttpResponse(
         response: response,
         context: context,
         onSuccess: () {
+          if (!context.mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -48,14 +50,14 @@ class AuthControllers {
         },
       );
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
     }
   }
 
   // Signin users function
 
   Future<void> signInUsers({
-    required context,
+    required BuildContext context,
     required String email,
     required String password,
   }) async {
@@ -72,12 +74,14 @@ class AuthControllers {
               "application/json;charset=UTF-8", //specify the context types as Json
         },
       );
+      if (!context.mounted) return;
       // Handle the response using  the managehttpresponse
 
       manageHttpResponse(
         response: response,
         context: context,
         onSuccess: () {
+          if (!context.mounted) return;
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -87,7 +91,7 @@ class AuthControllers {
         },
       );
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
     }
   }
 }

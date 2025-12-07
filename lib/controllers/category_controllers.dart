@@ -1,11 +1,11 @@
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/models/category.dart';
 
 class CategoryController {
- 
-
   // loaded the uploaded category
 
   Future<List<Category>> loadCategories() async {
@@ -17,7 +17,7 @@ class CategoryController {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-      print(response.body);
+      debugPrint(response.body);
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
