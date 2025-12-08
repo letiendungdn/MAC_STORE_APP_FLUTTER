@@ -12,10 +12,12 @@ class InnerCategoryContentWidget extends StatefulWidget {
   const InnerCategoryContentWidget({super.key, required this.category});
 
   @override
-  State<InnerCategoryContentWidget> createState() => _InnerCategoryContentWidgetState();
+  State<InnerCategoryContentWidget> createState() =>
+      _InnerCategoryContentWidgetState();
 }
 
-class _InnerCategoryContentWidgetState extends State<InnerCategoryContentWidget> {
+class _InnerCategoryContentWidgetState
+    extends State<InnerCategoryContentWidget> {
   late Future<List<Subcategory>> _subCategories;
   final SubcategoryController _subcategoryController = SubcategoryController();
 
@@ -30,7 +32,6 @@ class _InnerCategoryContentWidgetState extends State<InnerCategoryContentWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: SingleChildScrollView(
         child: Column(
           children: [

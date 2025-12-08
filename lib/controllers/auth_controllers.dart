@@ -1,12 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:mac_store_app/services/manage_http_response.dart';
 import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mac_store_app/provider/user_provider.dart';
+
+final providerContainer = ProviderContainer();
 
 class AuthControllers {
   Future<void> signUpUsers({
@@ -40,7 +45,7 @@ class AuthControllers {
       manageHttpResponse(
         response: response,
         context: context,
-        onSuccess: () {
+        onSuccess: () async {
           if (!context.mounted) return;
           Navigator.push(
             context,
@@ -80,14 +85,30 @@ class AuthControllers {
       manageHttpResponse(
         response: response,
         context: context,
-        onSuccess: () {
+        onSuccess: () async {
+          //Access sharedPreferences for token and user data storage
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          //Extract the authentication token from the response body
+          String token = jsonDecode(response.body)['token'];
+          //STORE the authentication token securely in sharedPreferences
+          await preferences.setString('auth_token', token);
+          //Encode the user data recived from the backend as json
+          final userJson = jsonEncode(jsonDecode(response.body)['user']);
+          // update the user provider with the user data
+          providerContainer.read(userProvider.notifier).setUser(userJson);
+          // store the user data in the provider container
+          await preferences.setString('user', userJson);
           if (!context.mounted) return;
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
+            MaterialPageRoute(
+              builder: (context) {
+                return const MainScreen();
+              },
+            ), // MaterialPageRoute
             (route) => false,
           );
-          showSnackBar(context, 'Logged In');
+          showSnackBar(context, 'Logged in');
         },
       );
     } catch (e) {
