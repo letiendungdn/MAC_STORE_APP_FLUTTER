@@ -76,11 +76,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextFormField(
                 onChanged: (value) {
-                  password = value;
+                  email = value;
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'enter your password';
+                    return 'enter your email';
                   } else {
                     return null;
                   }
@@ -112,11 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 onChanged: (value) {
-                  email = value;
+                  password = value;
                 },
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'enter your email';
+                    return 'enter your password';
                   } else {
                     return null;
                   }

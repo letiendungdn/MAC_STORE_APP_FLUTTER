@@ -8,8 +8,8 @@ void manageHttpResponse({
   required BuildContext context,
 
   // the context is to show snackbar
-  required VoidCallback
-  onSuccess, // the callback to excute on a successful response
+  required Future<void> Function()
+      onSuccess, // the callback to excute on a successful response
 }) {
   // Switch statement to handle  different http status codes
   switch (response.statusCode) {
@@ -21,7 +21,7 @@ void manageHttpResponse({
       break;
     case 500: // status code 500 indicates a server  error
       showSnackBar(context, json.decode(response.body)['error']);
-     case 201: // status code 201 indicates a resource was created successful
+    case 201: // status code 201 indicates a resource was created successful
       onSuccess();
       break;
   }
