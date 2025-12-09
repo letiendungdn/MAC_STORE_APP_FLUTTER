@@ -12,15 +12,15 @@ void main() {
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  Future<bool> _checkTokenAndSetUser(WidgetRef ref) async {
+  Future<void> _checkTokenAndSetUser(WidgetRef ref) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('auth_token');
     String? userJson = preferences.getString('user');
     if (token != null && userJson != null) {
       ref.read(userProvider.notifier).setUser(userJson);
-      return true;
+    } else {
+      ref.read(userProvider.notifier).signOut();
     }
-    return false;
   }
 
   // This widget is the root of your application.
