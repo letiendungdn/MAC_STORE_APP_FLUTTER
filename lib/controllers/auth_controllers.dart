@@ -116,3 +116,24 @@ class AuthControllers {
     }
   }
 }
+
+// Signout users function
+Future<void> signOutUsers({
+  required BuildContext context,
+}) async {
+  try {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove('auth_token');
+    await preferences.remove('user');
+    providerContainer.read(userProvider.notifier).signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
+    showSnackBar(context, 'Logged out');
+  } catch (e) {
+    debugPrint("Error: $e");
+    showSnackBar(context, 'Error: $e');
+  }
+}
