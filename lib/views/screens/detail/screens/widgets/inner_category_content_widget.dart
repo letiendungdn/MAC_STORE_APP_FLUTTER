@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/product_controller.dart';
 import 'package:mac_store_app/controllers/subcategory_controller.dart';
 import 'package:mac_store_app/models/category.dart';
+import 'package:mac_store_app/models/product.dart';
 import 'package:mac_store_app/models/subcategory.dart';
 import 'package:mac_store_app/views/screens/detail/screens/widgets/inner_banner_widget.dart';
 import 'package:mac_store_app/views/screens/detail/screens/widgets/subcategory_tile_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 
 class InnerCategoryContentWidget extends StatefulWidget {
   final Category category;
@@ -19,14 +23,17 @@ class InnerCategoryContentWidget extends StatefulWidget {
 class _InnerCategoryContentWidgetState
     extends State<InnerCategoryContentWidget> {
   late Future<List<Subcategory>> _subCategories;
+  late Future<List<Product>> futureProducts;
   final SubcategoryController _subcategoryController = SubcategoryController();
 
   @override
   void initState() {
     super.initState();
     _subCategories = _subcategoryController.getSubCategoriesByCategoryName(
-      widget.category.id,
+      widget.category.name,
     );
+    futureProducts =
+        ProductController().loadProductByCategory(widget.category.name);
   }
 
   @override
@@ -83,6 +90,37 @@ class _InnerCategoryContentWidgetState
                           );
                         },
                       ),
+                    ),
+                  );
+                }
+              },
+            ),
+            const ReusableTextWidget(
+              title: 'Popular Product',
+              subtitle: 'View all',
+            ),
+            FutureBuilder<List<Product>>(
+              future: futureProducts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('No product under this category'),
+                  );
+                } else {
+                  final products = snapshot.data!;
+                  return SizedBox(
+                    height: 250,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        final product = products[index];
+                        return ProductItemWidget(product: product);
+                      },
                     ),
                   );
                 }
