@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:mac_store_app/models/product.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/models/product.dart';
+import 'package:mac_store_app/provider/cart_provider.dart';
+import 'package:mac_store_app/services/manage_http_response.dart';
 
-class ProductDetailScreen extends StatefulWidget {
+class ProductDetailScreen extends ConsumerStatefulWidget {
   final Product product;
 
   const ProductDetailScreen({super.key, required this.product});
 
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+  ConsumerState<ProductDetailScreen> createState() =>
+      _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
+class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final _cartProvider = ref.read(cartProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Product Detail',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: GoogleFonts.quicksand(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite_border),
-          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border)),
         ],
       ),
       body: Column(
@@ -56,29 +61,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Positioned(
                     left: 22,
                     top: 0,
-                  child: Container(
-                    width: 216,
-                    height: 274,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF9CA8FF),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: SizedBox(
-                      height: 300,
-                      child: PageView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.product.images.length,
-                        itemBuilder: (context, index) => Image.network(
-                          widget.product.images[index],
-                          width: 198,
-                          height: 225,
-                          fit: BoxFit.cover,
+                    child: Container(
+                      width: 216,
+                      height: 274,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF9CA8FF),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: SizedBox(
+                        height: 300,
+                        child: PageView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.product.images.length,
+                          itemBuilder: (context, index) => Image.network(
+                            widget.product.images[index],
+                            width: 198,
+                            height: 225,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
                 ],
               ),
             ),
@@ -133,7 +138,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     color: const Color(0xFF363330),
                   ),
                 ),
-                Text(widget.product.description),
+                Text(
+                  widget.product.description,
+                  style: GoogleFonts.lato(
+                    letterSpacing: 1.7,
+                    fontSize: 15,
+                  ),
+                ),
               ],
             ),
           ),
@@ -142,7 +153,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       bottomSheet: Padding(
         padding: const EdgeInsets.all(8),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            _cartProvider.addProductToCart(
+              productName: widget.product.productName,
+              productPrice: widget.product.productPrice,
+              category: widget.product.category,
+              image: widget.product.images,
+              vendorId: widget.product.vendorId,
+              productQuantity: widget.product.quantity,
+              quantity: 1,
+              productId: widget.product.id,
+              description: widget.product.description,
+              fullName: widget.product.fullName,
+            );
+            showSnackBar(context, widget.product.productName);
+          },
           child: Container(
             width: 386,
             height: 46,
