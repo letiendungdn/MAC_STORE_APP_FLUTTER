@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
+import 'package:mac_store_app/views/screens/detail/screens/checkout_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
@@ -327,7 +328,16 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             Align(
               alignment: const Alignment(0.83, -1),
               child: InkWell(
-                onTap: totalAmount == 0.0 ? null : () {},
+                onTap: totalAmount == 0.0
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CheckoutScreen(),
+                          ),
+                        );
+                      },
                 child: Container(
                   width: 166,
                   height: 71,
