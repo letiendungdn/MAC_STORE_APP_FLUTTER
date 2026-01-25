@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:mac_store_app/models/cart.dart';
 
@@ -102,4 +101,6 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
     });
     return totalAmount;
   }
+
+  Map<String, Cart> get getCartItems => state;
 }
