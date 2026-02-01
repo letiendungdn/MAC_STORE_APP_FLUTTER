@@ -1,18 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/auth_controllers.dart';
+import 'package:mac_store_app/provider/user_provider.dart';
 
-class ShippingAddressScreen extends StatefulWidget {
+class ShippingAddressScreen extends ConsumerStatefulWidget {
   const ShippingAddressScreen({super.key});
 
   @override
-  State<ShippingAddressScreen> createState() => _ShippingAddressScreenState();
+  _ShippingAddressScreenState createState() => _ShippingAddressScreenState();
 }
 
-class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
+class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthControllers _authControllers = AuthControllers();
+  late String state;
+  late String city;
+  late String locality;
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Text(
+                'Updating...',
+                style: GoogleFonts.montserrat(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider);
+    final updateUser = ref.read(userProvider.notifier);
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.96),
       appBar: AppBar(
@@ -44,6 +80,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
+                  onChanged: (value) {
+                    state = value;
+                  },
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'please enter state';
@@ -51,12 +90,13 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                       return null;
                     }
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'State',
-                  ),
+                  decoration: const InputDecoration(labelText: 'State'),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
+                  onChanged: (value) {
+                    city = value;
+                  },
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'please enter City';
@@ -64,12 +104,13 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                       return null;
                     }
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'City',
-                  ),
+                  decoration: const InputDecoration(labelText: 'City'),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
+                  onChanged: (value) {
+                    locality = value;
+                  },
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'please enter Locality';
@@ -77,9 +118,7 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                       return null;
                     }
                   },
-                  decoration: const InputDecoration(
-                    labelText: 'Locality',
-                  ),
+                  decoration: const InputDecoration(labelText: 'Locality'),
                 ),
               ],
             ),
@@ -89,9 +128,25 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: InkWell(
-          onTap: () {
+          onTap: () async {
             if (_formKey.currentState!.validate()) {
-              print('Valid');
+              _showLoadingDialog();
+              await _authControllers.updateUserLocation(
+                context: context,
+                id: user!.id,
+                state: state,
+                city: city,
+                locality: locality,
+              );
+              if (!context.mounted) return;
+              Navigator.pop(context);
+              updateUser.recreateUserState(
+                state: state,
+                city: city,
+                locality: locality,
+              );
+              if (!context.mounted) return;
+              Navigator.pop(context);
             } else {
               print('Not valid');
             }
