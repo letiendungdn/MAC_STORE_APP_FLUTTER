@@ -21,15 +21,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Widget build(BuildContext context) {
     final cartData = ref.watch(cartProvider);
     final _cartNotifier = ref.read(cartProvider.notifier);
+    final user = ref.watch(userProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Checkout (${cartData.length})'),
-      ),
+      appBar: AppBar(title: Text('Checkout (${cartData.length})')),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 15,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,11 +55,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           height: 74,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(
-                              color: const Color(
-                                0xFFEFF0F2,
-                              ),
-                            ),
+                            border: Border.all(color: const Color(0xFFEFF0F2)),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -100,35 +92,57 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 4,
+                                      const SizedBox(height: 4),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child:
+                                                user!.state.isNotEmpty
+                                            ? Text(
+                                                user.state,
+                                                style: GoogleFonts.lato(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1.3,
+                                                ),
+                                              )
+                                            : Text(
+                                                'United state',
+                                                style: GoogleFonts.lato(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1.3,
+                                                ),
+                                              ),
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          'United state',
-                                          style: GoogleFonts.lato(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            letterSpacing: 1.3,
-                                          ),
-                                        ),
+                                        child:
+                                            user.city.isNotEmpty
+                                            ? Text(
+                                                user.city,
+                                                style: GoogleFonts.lato(
+                                                  color: const Color(
+                                                    0xFF7F808C,
+                                                  ),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                ),
+                                              )
+                                            : Text(
+                                                'Enter city',
+                                                style: GoogleFonts.lato(
+                                                  color: const Color(
+                                                    0xFF7F808C,
+                                                  ),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
                                       ),
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          'Enter city',
-                                          style: GoogleFonts.lato(
-                                            color: const Color(0xFF7F808C),
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      )
                                     ],
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -149,9 +163,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                   height: 43,
                                   clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
-                                    color: const Color(
-                                      0xFFFBF7F5,
-                                    ),
+                                    color: const Color(0xFFFBF7F5),
                                     borderRadius: BorderRadius.circular(100),
                                   ),
                                   child: Stack(
@@ -165,11 +177,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                           width: 26,
                                           'https://storage.googleapis.com/codeless-dev.appspot.com/uploads%2Fimages%2Fnn2Ldqjoc2Xp89Y7Wfzf%2F2ee3a5ce3b02828d0e2806584a6baa88.png',
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -182,7 +194,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           height: 20,
                           'https://firebasestorage.googleapis.com/v0/b/codeless-app.appspot.com/o/projects%2Fnn2Ldqjoc2Xp89Y7Wfzf%2F6ce18a0efc6e889de2f2878027c689c9caa53feeedit%201.png?alt=media&token=a3a8a999-80d5-4a2e-a9b7-a43a7fa8789a',
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -210,9 +222,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(
-                            color: const Color(0xFFEFF0F2),
-                          ),
+                          border: Border.all(color: const Color(0xFFEFF0F2)),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Stack(
@@ -265,24 +275,24 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                                       child: Text(
                                                         cartItem.productName,
                                                         maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow
-                                                                .ellipsis,
-                                                        style: GoogleFonts
-                                                            .quicksand(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          letterSpacing: 1.3,
-                                                        ),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.quicksand(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              letterSpacing:
+                                                                  1.3,
+                                                            ),
                                                       ),
                                                     ),
                                                     Align(
-                                                      alignment: Alignment
-                                                          .centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       child: Text(
                                                         cartItem.category,
-                                                        style:
-                                                            GoogleFonts.lato(
+                                                        style: GoogleFonts.lato(
                                                           color:
                                                               Colors.blueGrey,
                                                           fontSize: 16,
@@ -319,7 +329,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     );
                   },
                 ),
-              
               ),
               const SizedBox(height: 10),
               Text(
@@ -367,7 +376,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ref.read(userProvider)!.state == ''
+        child: user!.state.isEmpty
             ? TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -392,30 +401,29 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   if (selectedPaymentMethod == 'stripe') {
                     // Navigate to Stripe payment processing screen
                   } else {
-                    await Future.forEach(
-                      _cartNotifier.getCartItems.entries,
-                      (entry) async {
-                        final item = entry.value;
-                        await _orderController.uploadOrders(
-                          id: '',
-                          fullName: ref.read(userProvider)!.fullName,
-                          email: ref.read(userProvider)!.email,
-                          state: ref.read(userProvider)!.state,
-                          city: ref.read(userProvider)!.city,
-                          locality: ref.read(userProvider)!.locality,
-                          productName: item.productName,
-                          productPrice: item.productPrice,
-                          quantity: item.quantity,
-                          category: item.category,
-                          image: item.image[0],
-                          buyerId: ref.read(userProvider)!.id,
-                          vendorId: item.vendorId,
-                          processing: true,
-                          delivered: false,
-                          context: context,
-                        );
-                      },
-                    );
+                    await Future.forEach(_cartNotifier.getCartItems.entries, (
+                      entry,
+                    ) async {
+                      final item = entry.value;
+                      await _orderController.uploadOrders(
+                        id: '',
+                        fullName: ref.read(userProvider)!.fullName,
+                        email: ref.read(userProvider)!.email,
+                        state: ref.read(userProvider)!.state,
+                        city: ref.read(userProvider)!.city,
+                        locality: ref.read(userProvider)!.locality,
+                        productName: item.productName,
+                        productPrice: item.productPrice,
+                        quantity: item.quantity,
+                        category: item.category,
+                        image: item.image[0],
+                        buyerId: ref.read(userProvider)!.id,
+                        vendorId: item.vendorId,
+                        processing: true,
+                        delivered: false,
+                        context: context,
+                      );
+                    });
                   }
                 },
                 child: Container(
@@ -438,8 +446,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     ),
                   ),
                 ),
-              )
-            ,
+              ),
       ),
     );
   }

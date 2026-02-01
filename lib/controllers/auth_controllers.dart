@@ -115,12 +115,57 @@ class AuthControllers {
       debugPrint("Error: $e");
     }
   }
+
+  //Update user's state, city and locality
+  Future<void> updateUserLocation({
+    required BuildContext context,
+    required String id,
+    required String state,
+    required String city,
+    required String locality,
+  }) async {
+    try {
+      //Make an HTTP PUT request to update user's state, city and locality
+      final http.Response response = await http.put(
+        Uri.parse('$uri/api/users/$id'),
+        //set the header for the request to specify that the content is Json
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+        },
+        //Encode the update data(state, city and locality) AS Json object
+        body: jsonEncode({'state': state, 'city': city, 'locality': locality}),
+      );
+      if (!context.mounted) return;
+      manageHttpResponse(
+        response: response,
+        context: context,
+        onSuccess: () async {
+          //Decode the updated user data from the response body
+          //this converts the json String response into Dart Map
+          final updatedUser = jsonDecode(response.body);
+          //Shared preference for local data storage
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          //Encode the update user data as json String
+          //this prepares the data for storage in shared preference
+          final userJson = jsonEncode(updatedUser);
+          //update the application state with the updated user data userin Riverpod
+          //this ensures the app reflects the most recent user data
+          providerContainer.read(userProvider.notifier).setUser(userJson);
+          //store the updated user data in shared preference for future user
+          //this allows the app to retrive the user data even after the app restarts
+          await preferences.setString('user', userJson);
+        },
+      );
+    } catch (e) {
+      //catch any error that occure during the proccess
+      //show an error message to the user if the update fails
+      showSnackBar(context, 'Error updating location');
+    }
+  }
 }
 
 // Signout users function
-Future<void> signOutUsers({
-  required BuildContext context,
-}) async {
+Future<void> signOutUsers({required BuildContext context}) async {
   try {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove('auth_token');
