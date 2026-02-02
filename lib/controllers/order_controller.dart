@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mac_store_app/global_variables.dart';
@@ -62,6 +64,30 @@ class OrderController {
       );
     } catch (e) {
       showSnackBar(context, e.toString());
+    }
+  }
+
+  // Method to GET Orders by buyer id
+  Future<List<Order>> loadOrders({required String buyerId}) async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/orders/$buyerId'),
+        headers: <String, String>{
+          "Content-Type": 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        List<Order> orders = data
+            .map((order) => Order.fromJson(order as Map<String, dynamic>))
+            .toList();
+        return orders;
+      } else {
+        throw Exception('Failed to load Orders');
+      }
+    } catch (e) {
+      throw Exception('Error loading Orders');
     }
   }
 }
