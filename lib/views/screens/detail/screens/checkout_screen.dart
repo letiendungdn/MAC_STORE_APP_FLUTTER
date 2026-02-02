@@ -83,8 +83,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                         child: SizedBox(
                                           width: 114,
                                           child: Text(
-                                            'Add Adress',
-                                            style: TextStyle(
+                                            (user?.state.isNotEmpty ?? false)
+                                                ? 'Address'
+                                                : 'Add Address',
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               height: 1.1,
@@ -95,10 +97,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                       const SizedBox(height: 4),
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child:
-                                                user!.state.isNotEmpty
+                                        child: (user?.state.isNotEmpty ?? false)
                                             ? Text(
-                                                user.state,
+                                                user!.state,
                                                 style: GoogleFonts.lato(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -106,7 +107,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                                 ),
                                               )
                                             : Text(
-                                                'United state',
+                                                'Enter state',
                                                 style: GoogleFonts.lato(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -116,10 +117,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child:
-                                            user.city.isNotEmpty
+                                        child: (user?.city.isNotEmpty ?? false)
                                             ? Text(
-                                                user.city,
+                                                user!.city,
                                                 style: GoogleFonts.lato(
                                                   color: const Color(
                                                     0xFF7F808C,
@@ -376,7 +376,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: user!.state.isEmpty
+        child: (user?.state.isEmpty ?? true)
             ? TextButton(
                 onPressed: () {
                   Navigator.push(
