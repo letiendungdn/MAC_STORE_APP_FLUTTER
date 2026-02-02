@@ -19,7 +19,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   Widget build(BuildContext context) {
     final cartData = ref.watch(cartProvider);
     final cartNotifier = ref.read(cartProvider.notifier);
-    final totalAmount = ref.read(cartProvider.notifier).calculateTotalAmount();
+    final totalAmount = cartNotifier.calculateTotalAmount();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.20),

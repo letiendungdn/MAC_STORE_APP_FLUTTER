@@ -14,9 +14,26 @@ class ShippingAddressScreen extends ConsumerStatefulWidget {
 class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthControllers _authControllers = AuthControllers();
-  late String state;
-  late String city;
-  late String locality;
+  late TextEditingController _stateController;
+  late TextEditingController _cityController;
+  late TextEditingController _localityController;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = ref.read(userProvider);
+    _stateController = TextEditingController(text: user?.state ?? '');
+    _cityController = TextEditingController(text: user?.city ?? '');
+    _localityController = TextEditingController(text: user?.locality ?? '');
+  }
+
+  @override
+  void dispose() {
+    _stateController.dispose();
+    _cityController.dispose();
+    _localityController.dispose();
+    super.dispose();
+  }
 
   void _showLoadingDialog() {
     showDialog(
@@ -80,43 +97,34 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  onChanged: (value) {
-                    state = value;
-                  },
+                  controller: _stateController,
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'please enter state';
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
                   decoration: const InputDecoration(labelText: 'State'),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  onChanged: (value) {
-                    city = value;
-                  },
+                  controller: _cityController,
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'please enter City';
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
                   decoration: const InputDecoration(labelText: 'City'),
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  onChanged: (value) {
-                    locality = value;
-                  },
+                  controller: _localityController,
                   validator: (value) {
-                    if (value!.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'please enter Locality';
-                    } else {
-                      return null;
                     }
+                    return null;
                   },
                   decoration: const InputDecoration(labelText: 'Locality'),
                 ),
@@ -129,26 +137,34 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
         padding: const EdgeInsets.all(8.0),
         child: InkWell(
           onTap: () async {
-            if (_formKey.currentState!.validate()) {
-              _showLoadingDialog();
-              await _authControllers.updateUserLocation(
+            if (!_formKey.currentState!.validate()) return;
+            if (user == null) return;
+            final state = _stateController.text.trim();
+            final city = _cityController.text.trim();
+            final locality = _localityController.text.trim();
+            _showLoadingDialog();
+            try {
+              final success = await _authControllers.updateUserLocation(
                 context: context,
-                id: user!.id,
+                id: user.id,
                 state: state,
                 city: city,
                 locality: locality,
               );
               if (!context.mounted) return;
-              Navigator.pop(context);
-              updateUser.recreateUserState(
-                state: state,
-                city: city,
-                locality: locality,
-              );
+              Navigator.pop(context); // Close loading dialog
+              if (success) {
+                updateUser.recreateUserState(
+                  state: state,
+                  city: city,
+                  locality: locality,
+                );
+                if (!context.mounted) return;
+                Navigator.pop(context); // Return to previous screen
+              }
+            } catch (_) {
               if (!context.mounted) return;
-              Navigator.pop(context);
-            } else {
-              print('Not valid');
+              Navigator.pop(context); // Close loading dialog on error
             }
           },
           child: Container(

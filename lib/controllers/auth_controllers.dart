@@ -117,7 +117,7 @@ class AuthControllers {
   }
 
   //Update user's state, city and locality
-  Future<void> updateUserLocation({
+  Future<bool> updateUserLocation({
     required BuildContext context,
     required String id,
     required String state,
@@ -135,7 +135,8 @@ class AuthControllers {
         //Encode the update data(state, city and locality) AS Json object
         body: jsonEncode({'state': state, 'city': city, 'locality': locality}),
       );
-      if (!context.mounted) return;
+      if (!context.mounted) return false;
+      final success = response.statusCode == 200 || response.statusCode == 201;
       manageHttpResponse(
         response: response,
         context: context,
@@ -156,10 +157,14 @@ class AuthControllers {
           await preferences.setString('user', userJson);
         },
       );
+      return success;
     } catch (e) {
       //catch any error that occure during the proccess
       //show an error message to the user if the update fails
-      showSnackBar(context, 'Error updating location');
+      if (context.mounted) {
+        showSnackBar(context, 'Error updating location');
+      }
+      return false;
     }
   }
 }
