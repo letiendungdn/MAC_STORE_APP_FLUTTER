@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mac_store_app/controllers/auth_controllers.dart';
+import 'package:mac_store_app/views/screens/detail/screens/order_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -10,9 +11,16 @@ class AccountScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            await signOutUsers(context: context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return const OrderScreen();
+                },
+              ),
+            );
           },
-          child: const Text('Signout'),
+          child: const Text('My Orders'),
         ),
       ),
     );

@@ -60,9 +60,9 @@ class Order {
 
   String toJson() => json.encode(toMap());
 
-  factory Order.fromMap(Map<String, dynamic> map) {
+  factory Order.fromJson(Map<String, dynamic> map) {
     return Order(
-      id: map['id'] as String,
+      id: map['_id'] as String,
       fullName: map['fullName'] as String,
       email: map['email'] as String,
       state: map['state'] as String,
