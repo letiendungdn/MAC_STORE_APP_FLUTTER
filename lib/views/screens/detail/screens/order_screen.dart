@@ -5,6 +5,7 @@ import 'package:mac_store_app/controllers/order_controller.dart';
 import 'package:mac_store_app/models/order.dart';
 import 'package:mac_store_app/provider/order_provider.dart';
 import 'package:mac_store_app/provider/user_provider.dart';
+import 'package:mac_store_app/views/screens/detail/screens/order_detail_screen.dart';
 
 class OrderScreen extends ConsumerStatefulWidget {
   const OrderScreen({super.key});
@@ -122,7 +123,16 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     vertical: 25,
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return OrderDetailScreen(order: order);
+                          },
+                        ),
+                      );
+                    },
                     child: Container(
                       width: 335,
                       height: 153,
@@ -247,58 +257,59 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 13,
-                            top: 113,
-                            child: Container(
-                              width: 100,
-                              height: 25,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: order.delivered == true
-                                    ? const Color(0xFF3C55EF)
-                                    : order.processing == true
-                                    ? Colors.purple
-                                    : Colors.red,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: [
+
                                   Positioned(
-                                    left: 9,
-                                    top: 2,
-                                    child: Text(
-                                      order.delivered == true
-                                          ? "Delivered"
-                                          : order.processing == true
-                                          ? "Processing"
-                                          : "Cancelled",
-                                      style: GoogleFonts.montserrat(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.3,
+                                    left: 13,
+                                    top: 113,
+                                    child: Container(
+                                      width: 100,
+                                      height: 25,
+                                      clipBehavior: Clip.antiAlias,
+                                      decoration: BoxDecoration(
+                                        color: order.delivered == true
+                                            ? const Color(0xFF3C55EF)
+                                            : order.processing == true
+                                            ? Colors.purple
+                                            : Colors.red,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Positioned(
+                                            left: 9,
+                                            top: 2,
+                                            child: Text(
+                                              order.delivered == true
+                                                  ? "Delivered"
+                                                  : order.processing == true
+                                                  ? "Processing"
+                                                  : "Cancelled",
+                                              style: GoogleFonts.montserrat(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1.3,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 115,
+                                    left: 298,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Image.asset(
+                                        'assets/icons/delete.png',
+                                        width: 20,
+                                        height: 20,
                                       ),
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 115,
-                            left: 298,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Image.asset(
-                                'assets/icons/delete.png',
-                                width: 20,
-                                height: 20,
                               ),
                             ),
                           ),
