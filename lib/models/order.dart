@@ -8,6 +8,7 @@ class Order {
   final String city;
   final String locality;
   final String productName;
+  final String productId;
   final int productPrice;
   final int quantity;
   final String category;
@@ -26,6 +27,7 @@ class Order {
     required this.city,
     required this.locality,
     required this.productName,
+    required this.productId,
     required this.productPrice,
     required this.quantity,
     required this.category,
@@ -46,6 +48,7 @@ class Order {
       'city': city,
       'locality': locality,
       'productName': productName,
+      'productId': productId,
       'productPrice': productPrice,
       'quantity': quantity,
       'category': category,
@@ -69,6 +72,7 @@ class Order {
       city: map['city'] as String,
       locality: map['locality'] as String,
       productName: map['productName'] as String,
+      productId: map['productId'] as String,
       productPrice: map['productPrice'] as int,
       quantity: map['quantity'] as int,
       category: map['category'] as String,
@@ -80,5 +84,4 @@ class Order {
       createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
-
 }
