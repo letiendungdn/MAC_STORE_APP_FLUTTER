@@ -413,6 +413,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         city: ref.read(userProvider)!.city,
                         locality: ref.read(userProvider)!.locality,
                         productName: item.productName,
+                        productId: item.productId,
                         productPrice: item.productPrice,
                         quantity: item.quantity,
                         category: item.category,
