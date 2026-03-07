@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mac_store_app/controllers/auth_controllers.dart';
 import 'package:mac_store_app/views/screens/detail/screens/order_screen.dart';
 
 class AccountScreen extends StatelessWidget {
