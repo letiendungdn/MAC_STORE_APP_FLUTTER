@@ -21,7 +21,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final cartProviderData = ref.read(cartProvider.notifier);
     final favoriteProviderData = ref.read(favoriteProvider.notifier);
-    final favoriteData = ref.watch(favoriteProvider);
+    ref.watch(favoriteProvider);
     final cartData = ref.watch(cartProvider);
     final isInCart = cartData.containsKey(widget.product.id);
     return Scaffold(
@@ -51,7 +51,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               );
               showSnackBar(context, 'added ${widget.product.productName}');
             },
-            icon: favoriteData.containsKey(widget.product.id)
+            icon: favoriteProviderData.getFavoriteItems.containsKey(widget.product.id)
                 ? const Icon(
                     Icons.favorite,
                     color: Colors.red,
