@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/models/order.dart';
 import 'package:mac_store_app/services/manage_http_response.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderController {
   // function to upload orders
@@ -28,6 +29,9 @@ class OrderController {
     required bool delivered,
   }) async {
     try {
+      final SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+      final String? token = preferences.getString('auth_token');
       final Order order = Order(
         id: id,
         fullName: fullName,
@@ -53,6 +57,7 @@ class OrderController {
         body: order.toJson(),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token": token!,
         },
       );
       if (!context.mounted) return;

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:mac_store_app/models/cart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //Define a StateNotifierProvider to expose an instance of the CartNofier
 //Making it accessible within our app
@@ -11,7 +14,41 @@ final cartProvider = StateNotifierProvider<CartNotifier, Map<String, Cart>>((
 
 // Manages cart items keyed by productId.
 class CartNotifier extends StateNotifier<Map<String, Cart>> {
-  CartNotifier() : super({});
+  CartNotifier() : super({}){
+    _loadCartItems();
+  } 
+
+  //A private method that loads items from sharedpreferences
+  Future<void> _loadCartItems() async {
+    //retrieving the sharepreferences instance to store data
+    final prefs = await SharedPreferences.getInstance();
+    //fetch the json string of the favorite items from sharedpreferences under the key favorites
+    final cartString = prefs.getString('cart_items');
+    //checking if the string is not null, meaning there is saved data to load
+    if (cartString != null) {
+      //decode the json String into map of dynamic data
+      final Map<String, dynamic> cartMap = jsonDecode(cartString);
+
+      //covert the dynamic map into a map of Favorite Object using the 'fromjson' factory method
+      final cartItems = cartMap
+          .map((key, value) => MapEntry(key, Cart.fromJson(value)));
+
+      //updating the state with the loaded favorites
+      state = cartItems;
+    }
+  }
+
+
+
+  //A private method that saves the current list of favorite items to sharedpreferences
+  Future<void> _saveCartItems() async {
+    //retrieving the sharepreferences instance to store data
+    final prefs = await SharedPreferences.getInstance();
+    //encoding the current state (Map of favorite object ) into json String
+    final cartString = jsonEncode(state);
+    //saving the json string to sharedpreferences with the key "cart_items"
+    await prefs.setString('cart_items', cartString);
+  }
 
   void addProductToCart({
     required String productName,
@@ -41,6 +78,7 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
           fullName: state[productId]!.fullName,
         ),
       };
+      _saveCartItems();
     } else {
       state = {
         ...state,
@@ -57,40 +95,38 @@ class CartNotifier extends StateNotifier<Map<String, Cart>> {
           fullName: fullName,
         ),
       };
+      _saveCartItems();
     }
   }
 
   // Method to increment the quantity of a product in the cart
   void incrementCartItem(String productId) {
-    final item = state[productId];
-    if (item == null) return;
+    if (state.containsKey(productId)) {
+      state[productId]!.quantity++;
 
-    if (item.quantity < item.productQuantity) {
-      item.quantity++;
       // Notify listeners that the state has changed
       state = {...state};
+      _saveCartItems();
     }
   }
 
   // Method to decrement the quantity of a product in the cart
   void decrementCartItem(String productId) {
-    final item = state[productId];
-    if (item == null) return;
+    if (state.containsKey(productId)) {
+      state[productId]!.quantity--;
 
-    if (item.quantity > 1) {
-      item.quantity--;
+      //Notify listeners that the state has changed
       state = {...state};
-      return;
+      _saveCartItems();
     }
-
-    removeCartItem(productId);
   }
 
   // Method to remove item from the cart
   void removeCartItem(String productId) {
-    if (!state.containsKey(productId)) return;
-    final updated = {...state}..remove(productId);
-    state = updated;
+    state.remove(productId);
+    //Notify listeners that the state has changed
+    state = {...state};
+    _saveCartItems();
   }
 
   // Method to calculate total amount of items in the cart
