@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/provider/cart_provider.dart';
+import 'package:mac_store_app/provider/favorite_provider.dart';
+import 'package:mac_store_app/provider/user_provider.dart';
+import 'package:mac_store_app/views/screens/detail/screens/order_screen.dart';
+import 'package:mac_store_app/views/screens/detail/screens/shipping_address_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -12,6 +17,9 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
+    final cartData = ref.read(cartProvider);
+    final favoriteCount = ref.read(favoriteProvider);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -70,26 +78,48 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
                 Align(
                   alignment: const Alignment(0, 0.03),
-                  child: Text(
-                    'Macaulay Famous',
-                    style: GoogleFonts.montserrat(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: user!.fullName != ''
+                      ? Text(
+                          user.fullName,
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Text(
+                          'User',
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
                 Align(
                   alignment: const Alignment(0.05, 0.17),
                   child: InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'United State',
-                      style: GoogleFonts.montserrat(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const ShippingAddressScreen();
+                      }));
+                    },
+                    child: user.state != ''
+                        ? Text(
+                            user.state,
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        : Text(
+                            'States',
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
                 Align(
@@ -168,7 +198,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           left: 130,
                           top: 66,
                           child: Text(
-                            '5',
+                            favoriteCount.length.toString(),
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 22,
@@ -222,7 +252,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           left: 20,
                           top: 66,
                           child: Text(
-                            '20',
+                            cartData.length.toString(),
                             style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontSize: 22,
@@ -281,7 +311,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ],
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const OrderScreen();
+                }));
+              },
               leading: Image.asset(
                 'assets/icons/orders.png',
               ),
@@ -296,7 +330,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               height: 10,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const OrderScreen();
+                }));
+              },
               leading: Image.asset(
                 'assets/icons/history.png',
               ),
