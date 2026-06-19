@@ -22,11 +22,13 @@ class ProductController {
             .map((product) => Product.fromMap(product as Map<String, dynamic>))
             .toList();
         return products;
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
         throw Exception('Failed to load popular products');
       }
     } catch (e) {
-      throw Exception('Error loading popular products: $e');
+      throw Exception('Error loading product : $e');
     }
   }
 
@@ -46,11 +48,13 @@ class ProductController {
             .map((product) => Product.fromMap(product as Map<String, dynamic>))
             .toList();
         return products;
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
-        throw Exception('Failed to load products by category');
+        throw Exception('Failed to load popular products');
       }
     } catch (e) {
-      throw Exception('Error loading products by category: $e');
+      throw Exception('Error loading product : $e');
     }
   }
 
@@ -70,11 +74,13 @@ class ProductController {
             .map((product) => Product.fromMap(product as Map<String, dynamic>))
             .toList();
         return products;
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
         throw Exception('Failed to load related products');
       }
     } catch (e) {
-      throw Exception('Error loading related products: $e');
+      throw Exception('Error related product : $e');
     }
   }
 
@@ -94,11 +100,13 @@ class ProductController {
             .map((product) => Product.fromMap(product as Map<String, dynamic>))
             .toList();
         return products;
+      } else if (response.statusCode == 404) {
+        return [];
       } else {
-        throw Exception('Failed to load top rated products');
+        throw Exception('Failed to load top Rated products');
       }
     } catch (e) {
-      throw Exception('Error loading top rated products: $e');
+      throw Exception('Error related product : $e');
     }
   }
 }
