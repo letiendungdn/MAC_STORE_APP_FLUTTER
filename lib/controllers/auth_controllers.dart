@@ -10,6 +10,7 @@ import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mac_store_app/provider/user_provider.dart';
+import 'package:mac_store_app/provider/delivered_order_count_provider.dart';
 
 final providerContainer = ProviderContainer();
 
@@ -96,6 +97,9 @@ class AuthControllers {
           final userJson = jsonEncode(jsonDecode(response.body)['user']);
           // update the user provider with the user data
           providerContainer.read(userProvider.notifier).setUser(userJson);
+          providerContainer
+              .read(deliveredOrderCountProvider.notifier)
+              .resetCount();
           // store the user data in the provider container
           await preferences.setString('user', userJson);
           if (!context.mounted) return;
@@ -176,6 +180,9 @@ Future<void> signOutUsers({required BuildContext context}) async {
     await preferences.remove('auth_token');
     await preferences.remove('user');
     providerContainer.read(userProvider.notifier).signOut();
+    providerContainer
+        .read(deliveredOrderCountProvider.notifier)
+        .resetCount();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
