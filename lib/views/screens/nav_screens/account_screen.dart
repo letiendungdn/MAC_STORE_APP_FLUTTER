@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/auth_controllers.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/provider/delivered_order_count_provider.dart';
 import 'package:mac_store_app/provider/favorite_provider.dart';
@@ -16,6 +17,72 @@ class AccountScreen extends ConsumerStatefulWidget {
 }
 
 class _AccountScreenState extends ConsumerState<AccountScreen> {
+  final AuthControllers _authControllers = AuthControllers();
+
+  //show signout dialog
+  void showSignOutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Are you sure',
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          content: Text(
+            'Do you really want to logout ?',
+            style: GoogleFonts.montserrat(
+              fontSize: 16,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.montserrat(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                await _authControllers.signOutUsers(
+                  context: context,
+                  ref: ref,
+                );
+              },
+              child: Text(
+                'Logout',
+                style: GoogleFonts.montserrat(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final buyerId = ref.read(userProvider)!.id;
@@ -368,7 +435,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             ),
             const SizedBox(height: 10),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                showSignOutDialog(context);
+              },
               leading: Image.asset(
                 'assets/icons/logout.png',
               ),
