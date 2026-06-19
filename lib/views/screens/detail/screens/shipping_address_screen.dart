@@ -150,6 +150,7 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 state: state,
                 city: city,
                 locality: locality,
+                ref: ref,
               );
               if (!context.mounted) return;
               Navigator.pop(context); // Close loading dialog

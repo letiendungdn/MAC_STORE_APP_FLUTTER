@@ -127,4 +127,18 @@ class OrderController {
       showSnackBar(context, e.toString());
     }
   }
+
+  //Method to count delivered orders
+  Future<int> getDeliveredOrderCount({required String buyerId}) async {
+    try {
+      //load all order
+      List<Order> orders = await loadOrders(buyerId: buyerId);
+      //Filter ony delivered orders
+      int deliveredCount = orders.where((order) => order.delivered).length;
+
+      return deliveredCount;
+    } catch (e) {
+      throw Exception('Error counting Delivered Orders');
+    }
+  }
 }

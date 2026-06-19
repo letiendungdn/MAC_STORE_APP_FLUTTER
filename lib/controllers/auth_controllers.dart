@@ -10,8 +10,7 @@ import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mac_store_app/provider/user_provider.dart';
-
-final providerContainer = ProviderContainer();
+import 'package:mac_store_app/provider/delivered_order_count_provider.dart';
 
 class AuthControllers {
   Future<void> signUpUsers({
@@ -65,6 +64,7 @@ class AuthControllers {
     required BuildContext context,
     required String email,
     required String password,
+    required WidgetRef ref,
   }) async {
     try {
       http.Response response = await http.post(
@@ -95,7 +95,8 @@ class AuthControllers {
           //Encode the user data recived from the backend as json
           final userJson = jsonEncode(jsonDecode(response.body)['user']);
           // update the user provider with the user data
-          providerContainer.read(userProvider.notifier).setUser(userJson);
+          ref.read(userProvider.notifier).setUser(userJson);
+          ref.read(deliveredOrderCountProvider.notifier).resetCount();
           // store the user data in the provider container
           await preferences.setString('user', userJson);
           if (!context.mounted) return;
@@ -123,6 +124,7 @@ class AuthControllers {
     required String state,
     required String city,
     required String locality,
+    required WidgetRef ref,
   }) async {
     try {
       //Make an HTTP PUT request to update user's state, city and locality
@@ -151,7 +153,7 @@ class AuthControllers {
           final userJson = jsonEncode(updatedUser);
           //update the application state with the updated user data userin Riverpod
           //this ensures the app reflects the most recent user data
-          providerContainer.read(userProvider.notifier).setUser(userJson);
+          ref.read(userProvider.notifier).setUser(userJson);
           //store the updated user data in shared preference for future user
           //this allows the app to retrive the user data even after the app restarts
           await preferences.setString('user', userJson);
@@ -167,23 +169,29 @@ class AuthControllers {
       return false;
     }
   }
-}
 
-// Signout users function
-Future<void> signOutUsers({required BuildContext context}) async {
-  try {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove('auth_token');
-    await preferences.remove('user');
-    providerContainer.read(userProvider.notifier).signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false,
-    );
-    showSnackBar(context, 'Logged out');
-  } catch (e) {
-    debugPrint("Error: $e");
-    showSnackBar(context, 'Error: $e');
+  //Signout
+  Future<void> signOutUsers({
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.remove('auth_token');
+      await preferences.remove('user');
+      ref.read(userProvider.notifier).signOut();
+      ref.read(deliveredOrderCountProvider.notifier).resetCount();
+      if (!context.mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false,
+      );
+      showSnackBar(context, 'Logged out');
+    } catch (e) {
+      debugPrint('Error: $e');
+      if (!context.mounted) return;
+      showSnackBar(context, 'Error signing out');
+    }
   }
 }
