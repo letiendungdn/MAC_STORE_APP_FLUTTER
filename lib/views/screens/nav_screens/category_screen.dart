@@ -1,109 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/category_controllers.dart';
 import 'package:mac_store_app/controllers/subcategory_controller.dart';
 import 'package:mac_store_app/models/category.dart';
-import 'package:mac_store_app/models/subcategory.dart';
-import 'package:mac_store_app/views/screens/nav_screens/widgets/header_widget.dart';
+import 'package:mac_store_app/provider/category_provider.dart';
+import 'package:mac_store_app/provider/subcategory_provider.dart';
 import 'package:mac_store_app/views/screens/detail/screens/widgets/subcategory_tile_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/header_widget.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryScreen extends ConsumerStatefulWidget {
   const CategoryScreen({super.key});
 
   @override
-  State<CategoryScreen> createState() => _CategoryScreenState();
+  ConsumerState<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
-  // A future that will hold the list  of categories once loaded from the Api
-  late Future<List<Category>> futureCategory;
+class _CategoryScreenState extends ConsumerState<CategoryScreen> {
   Category? _selectedCategory;
-  List<Subcategory> _subcategories = [];
-  final SubcategoryController _subcategoryController = SubcategoryController();
 
   @override
   void initState() {
     super.initState();
-    futureCategory = CategoryController().loadCategories();
-    // once the categories are loaded proccess then
-    futureCategory.then((categories) {
-      // iterate through the categories to find the  "Fashion " category
-      for (var category in categories) {
-        if (category.name == "Fashion") {
-          // if "Fashion " category is found , set it as the selected category
-          setState(() {
-            _selectedCategory = category;
-          });
-          // load subcategories for the "Fashion" category
-          _loadSubcategories(category.name);
-        }
-      }
-    });
+    _fetchCategories();
   }
 
-  // this will load subcategories base on the categoryName
-  Future<void> _loadSubcategories(String categoryName) async {
-    final subcategories = await _subcategoryController
+  Future<void> _fetchCategories() async {
+    final categories = await CategoryController().loadCategories();
+    ref.read(categoryProvider.notifier).setCategories(categories);
+
+    for (var category in categories) {
+      if (category.name == 'Fashion') {
+        setState(() {
+          _selectedCategory = category;
+        });
+        _fetchSubcategories(category.name);
+      }
+    }
+  }
+
+  Future<void> _fetchSubcategories(String categoryName) async {
+    final subcategories = await SubcategoryController()
         .getSubCategoriesByCategoryName(categoryName);
-    setState(() {
-      _subcategories = subcategories;
-    });
+    ref.read(subcategoryProvider.notifier).setSubcategories(subcategories);
   }
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider);
+    final subcategories = ref.watch(subcategoryProvider);
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 20),
+        preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.20),
         child: const HeaderWidget(),
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // left size - Display categories
+          //left side - Display categories
           Expanded(
             flex: 2,
             child: Container(
               color: Colors.grey.shade200,
-              child: FutureBuilder(
-                future: futureCategory,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else {
-                    final categories = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        final category = categories[index];
-                        return ListTile(
-                          onTap: () {
-                            setState(() {
-                              _selectedCategory = category;
-                            });
-                            _loadSubcategories(category.name);
-                          },
-                          title: Text(
-                            category.name,
-                            style: GoogleFonts.quicksand(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: _selectedCategory == category
-                                  ? Colors.blue
-                                  : Colors.black,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
+              child: ListView.builder(
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return ListTile(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      _fetchSubcategories(category.name);
+                    },
+                    title: Text(
+                      category.name,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: _selectedCategory == category
+                            ? Colors.blue
+                            : Colors.black,
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
           ),
-          // Right side - Display selected category details
+          //Right side - Display selected category details
           Expanded(
             flex: 5,
             child: _selectedCategory != null
@@ -116,8 +102,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           child: Text(
                             _selectedCategory!.name,
                             style: GoogleFonts.quicksand(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              letterSpacing: 1.7,
                             ),
                           ),
                         ),
@@ -133,19 +120,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             ),
                           ),
                         ),
-                        _subcategories.isNotEmpty
+                        subcategories.isNotEmpty
                             ? GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: _subcategories.length,
+                                itemCount: subcategories.length,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      mainAxisSpacing: 4,
-                                      crossAxisSpacing: 8,
-                                      childAspectRatio: 2 / 3,
-                                    ),
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 4,
+                                  crossAxisSpacing: 8,
+                                  childAspectRatio: 2 / 3,
+                                ),
                                 itemBuilder: (context, index) {
-                                  final subcategory = _subcategories[index];
+                                  final subcategory = subcategories[index];
                                   return SubcategoryTileWidget(
                                     image: subcategory.image,
                                     title: subcategory.subCategoryName,
@@ -160,6 +148,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                     style: GoogleFonts.quicksand(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.7,
                                     ),
                                   ),
                                 ),
