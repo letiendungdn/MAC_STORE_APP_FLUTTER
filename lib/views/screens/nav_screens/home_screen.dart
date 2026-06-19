@@ -4,6 +4,7 @@ import 'package:mac_store_app/views/screens/nav_screens/widgets/header_widget.da
 import 'package:mac_store_app/views/screens/nav_screens/widgets/category_item_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/popular_product_widget.dart';
 import 'package:mac_store_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/top_rated_product.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,8 +18,16 @@ class HomeScreen extends StatelessWidget {
             HeaderWidget(),
             BannerWidget(),
             CategoryItemWidget(),
-            ReusableTextWidget(title: 'Popular Products', subtitle: 'View All'),
-            PopularProductWidget()
+            ReusableTextWidget(
+              title: 'Popular Products',
+              subtitle: 'view all',
+            ),
+            PopularProductWidget(),
+            ReusableTextWidget(
+              title: 'Top Rated Products',
+              subtitle: 'view all',
+            ),
+            TopRatedProductWidget(),
           ],
         ),
       ),
