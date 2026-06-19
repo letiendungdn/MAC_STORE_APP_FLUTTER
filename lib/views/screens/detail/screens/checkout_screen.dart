@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mac_store_app/controllers/order_controller.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/provider/user_provider.dart';
+import 'package:mac_store_app/services/manage_http_response.dart';
 import 'package:mac_store_app/views/screens/detail/screens/shipping_address_screen.dart';
+import 'package:mac_store_app/views/screens/main_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -425,6 +427,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         context: context,
                       );
                     });
+                    if (!context.mounted) return;
+                    _cartNotifier.clearCart();
+                    showSnackBar(context, 'Order successfully placed');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const MainScreen();
+                        },
+                      ),
+                    );
                   }
                 },
                 child: Container(

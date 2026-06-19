@@ -27,12 +27,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
       home: FutureBuilder(
         future: _checkTokenAndSetUser(ref),
         builder: (context, snapshot) {
