@@ -53,4 +53,52 @@ class ProductController {
       throw Exception('Error loading products by category: $e');
     }
   }
+
+  // display related products by subcategory
+  Future<List<Product>> loadRelatedProductsBySubcategory(String productId) async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/related-products-by-subcatagory/$productId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+        final List<Product> products = data
+            .map((product) => Product.fromMap(product as Map<String, dynamic>))
+            .toList();
+        return products;
+      } else {
+        throw Exception('Failed to load related products');
+      }
+    } catch (e) {
+      throw Exception('Error loading related products: $e');
+    }
+  }
+
+  // method to get the top 10 highest-rated products
+  Future<List<Product>> loadTopRatedProduct() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/top-rated-products'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+        final List<Product> products = data
+            .map((product) => Product.fromMap(product as Map<String, dynamic>))
+            .toList();
+        return products;
+      } else {
+        throw Exception('Failed to load top rated products');
+      }
+    } catch (e) {
+      throw Exception('Error loading top rated products: $e');
+    }
+  }
 }

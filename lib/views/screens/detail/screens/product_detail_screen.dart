@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mac_store_app/controllers/product_controller.dart';
 import 'package:mac_store_app/models/product.dart';
 import 'package:mac_store_app/provider/cart_provider.dart';
 import 'package:mac_store_app/provider/favorite_provider.dart';
+import 'package:mac_store_app/provider/related_product_provider.dart';
 import 'package:mac_store_app/services/manage_http_response.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/product_item_widget.dart';
+import 'package:mac_store_app/views/screens/nav_screens/widgets/reusable_text_widget.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   final Product product;
@@ -18,7 +22,25 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
+  void initState() {
+    super.initState();
+    _fetchProduct();
+  }
+
+  Future<void> _fetchProduct() async {
+    final ProductController productController = ProductController();
+    try {
+      final products = await productController
+          .loadRelatedProductsBySubcategory(widget.product.id);
+      ref.read(relatedProductProvider.notifier).setProducts(products);
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final relatedProduct = ref.watch(relatedProductProvider);
     final cartProviderData = ref.read(cartProvider.notifier);
     final favoriteProviderData = ref.read(favoriteProvider.notifier);
     ref.watch(favoriteProvider);
@@ -60,9 +82,10 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Center(
             child: Container(
               width: 260,
@@ -197,7 +220,23 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               ],
             ),
           ),
-        ],
+          const ReusableTextWidget(title: 'Related Products', subtitle: ''),
+          SizedBox(
+            height: 250,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: relatedProduct.length,
+              itemBuilder: (context, index) {
+                final product = relatedProduct[index];
+                return ProductItemWidget(
+                  product: product,
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 60),
+          ],
+        ),
       ),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(8),
