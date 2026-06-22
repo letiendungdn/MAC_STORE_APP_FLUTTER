@@ -58,6 +58,33 @@ class ProductController {
     }
   }
 
+  //Method to search for products by name of description
+  Future<List<Product>> searchProducts(String query) async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse('$uri/api/search-products?query=$query'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      print('search product response..${response.body}');
+      if (response.statusCode == 200) {
+        final List<dynamic> data =
+            json.decode(response.body) as List<dynamic>;
+        final List<Product> products = data
+            .map((product) => Product.fromMap(product as Map<String, dynamic>))
+            .toList();
+        return products;
+      } else if (response.statusCode == 404) {
+        return [];
+      } else {
+        throw Exception('Failed to search products');
+      }
+    } catch (e) {
+      throw Exception('Error search product : $e');
+    }
+  }
+
   Future<List<Product>> loadProductByCategory(String category) async {
     try {
       final http.Response response = await http.get(
