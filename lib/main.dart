@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:mac_store_app/global_variables.dart';
 import 'package:mac_store_app/provider/user_provider.dart';
 import 'package:mac_store_app/views/screens/authentiaction/login_screen.dart';
 import 'package:mac_store_app/views/screens/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = stripePublishableKey;
+  await Stripe.instance.applySettings();
   runApp(const ProviderScope(child: MyApp()));
 }
 
