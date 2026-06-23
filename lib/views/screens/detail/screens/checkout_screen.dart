@@ -67,40 +67,54 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
       if (!context.mounted) return;
 
-      for (final entry in cartData.entries) {
-        final item = entry.value;
-        await _orderController.uploadOrders(
-          id: '',
-          fullName: ref.read(userProvider)!.fullName,
-          email: ref.read(userProvider)!.email,
-          state: ref.read(userProvider)!.state,
-          city: ref.read(userProvider)!.city,
-          locality: ref.read(userProvider)!.locality,
-          productName: item.productName,
-          productId: item.productId,
-          productPrice: item.productPrice,
-          quantity: item.quantity,
-          category: item.category,
-          image: item.image[0],
-          buyerId: ref.read(userProvider)!.id,
-          vendorId: item.vendorId,
-          processing: true,
-          delivered: false,
-          context: context,
-        );
-      }
+      //step 4 :verify payment intent status
+      final paymentIntentStatus = await _orderController.getPaymentIntentStatus(
+        context: context,
+        paymentIntentId: paymentIntent['id'] as String,
+      );
 
       if (!context.mounted) return;
-      cartNotifier.clearCart();
-      showSnackBar(context, 'Payment Successful');
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const MainScreen();
-          },
-        ),
-      );
+
+      //upload each cart item as an order to the server
+      if (paymentIntentStatus['status'] == 'succeeded') {
+        for (final entry in cartData.entries) {
+          final item = entry.value;
+          await _orderController.uploadOrders(
+            id: '',
+            fullName: ref.read(userProvider)!.fullName,
+            email: ref.read(userProvider)!.email,
+            state: ref.read(userProvider)!.state,
+            city: ref.read(userProvider)!.city,
+            locality: ref.read(userProvider)!.locality,
+            productName: item.productName,
+            productId: item.productId,
+            productPrice: item.productPrice,
+            quantity: item.quantity,
+            category: item.category,
+            image: item.image[0],
+            buyerId: ref.read(userProvider)!.id,
+            vendorId: item.vendorId,
+            processing: true,
+            delivered: false,
+            context: context,
+            paymentStatus: paymentIntentStatus['status'] as String,
+            paymentIntentId: paymentIntentStatus['id'] as String,
+            paymentMethod: 'card',
+          );
+        }
+
+        if (!context.mounted) return;
+        cartNotifier.clearCart();
+        showSnackBar(context, 'Payment Successful');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const MainScreen();
+            },
+          ),
+        );
+      }
     } catch (e) {
       showSnackBar(context, 'Payment Failed : $e');
     } finally {
@@ -517,6 +531,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         processing: true,
                         delivered: false,
                         context: context,
+                        paymentStatus: 'pending',
+                        paymentIntentId: 'cod',
+                        paymentMethod: 'cod',
                       );
                     });
                     if (!context.mounted) return;

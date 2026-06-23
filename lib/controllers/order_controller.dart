@@ -8,9 +8,8 @@ import 'package:mac_store_app/services/manage_http_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderController {
-  // function to upload orders
+  //function to upload orders
   Future<void> uploadOrders({
-    required BuildContext context,
     required String id,
     required String fullName,
     required String email,
@@ -27,11 +26,14 @@ class OrderController {
     required String vendorId,
     required bool processing,
     required bool delivered,
+    required String paymentStatus,
+    required String paymentIntentId,
+    required String paymentMethod,
+    required BuildContext context,
   }) async {
     try {
-      final SharedPreferences preferences =
-          await SharedPreferences.getInstance();
-      final String? token = preferences.getString('auth_token');
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
       final Order order = Order(
         id: id,
         fullName: fullName,
@@ -49,7 +51,9 @@ class OrderController {
         vendorId: vendorId,
         processing: processing,
         delivered: delivered,
-        createdAt: DateTime.now(),
+        paymentStatus: paymentStatus,
+        paymentIntentId: paymentIntentId,
+        paymentMethod: paymentMethod,
       );
 
       http.Response response = await http.post(
@@ -170,6 +174,34 @@ class OrderController {
       }
     } catch (e) {
       throw Exception('Error creating payment intent: $e');
+    }
+  }
+
+  // Retrieve payment intent to know if the payment was successful or not
+  Future<Map<String, dynamic>> getPaymentIntentStatus({
+    required BuildContext context,
+    required String paymentIntentId,
+  }) async {
+    try {
+      final SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+      final String? token = preferences.getString('auth_token');
+
+      final http.Response response = await http.get(
+        Uri.parse('$uri/api/payment-intent/$paymentIntentId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token!,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to get payment intent ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get payment intent $e');
     }
   }
 }
